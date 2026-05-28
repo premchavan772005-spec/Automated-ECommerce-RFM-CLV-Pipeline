@@ -11,10 +11,10 @@ An enterprise-grade, data engineering and predictive machine learning pipeline t
 ### 🖥️ Dashboard Quick View
 
 #### Historical Performance Portfolio (Page 1)
-![Historical Portfolio View](dashboard/page1.png)
+![Historical Portfolio View]("https://github.com/user-attachments/assets/918acd96-a54d-4b45-ba2c-38c3dd0e3dd1" )
 
 #### Forward-Looking Predictive Valuation (Page 2)
-![Predictive Valuation View](dashboard/page2.png)
+![Predictive Valuation View]("https://github.com/user-attachments/assets/735718e2-395d-4d5f-8d63-6da76e1d90a5")
 
 
 ## 🏗️ System Architecture & Data Flow
