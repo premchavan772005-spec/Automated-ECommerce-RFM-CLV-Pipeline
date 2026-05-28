@@ -8,6 +8,14 @@ An enterprise-grade, data engineering and predictive machine learning pipeline t
 * **Automated Engineering:** Transformed manual, fragmented workflows into an automated, structured data engineering asset ready for production scheduling.
 
 ---
+### 🖥️ Dashboard Quick View
+
+#### Historical Performance Portfolio (Page 1)
+![Historical Portfolio View](dashboard/page1.png)
+
+#### Forward-Looking Predictive Valuation (Page 2)
+![Predictive Valuation View](dashboard/page2.png)
+
 
 ## 🏗️ System Architecture & Data Flow
 
