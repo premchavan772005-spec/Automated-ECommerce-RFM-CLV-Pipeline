@@ -63,3 +63,50 @@ SELECT CustomerID, ROUND(total_spend, 2) AS total_spend,
     ELSE 'Long Tail Customer' END AS pareto_segment
 FROM RunningTotals 
 ORDER BY total_spend DESC;
+```
+---
+
+## Predictive Modeling (ML Layer)
+To move from historical analysis to proactive strategy, the pipeline utilizes statistical modeling frameworks to map future behavior:
+
+* **BG/NBD Model (Beta-Geometric/Negative Binomial Distribution):** Predicts the expected number of repeat transactions a customer will make in a defined time horizon and calculates the active probability of each account.
+* **Gamma-Gamma Model:** Evaluates the monetary value of future purchases, assuming no correlation between transaction frequency and monetary value.
+* **Output:** Generates a granular, row-level 12-month expected spend projection per customer, pushed directly back to the database for dashboard integration.
+
+---
+
+## How to Run Locally
+
+### 1. Database Setup
+Ensure you have a local MySQL instance running. Create the database and build the core schema tracking layer:
+```bash
+mysql -u root -p < customer_rfm_view_final.sql
+```
+### 2. Install Pipeline Dependencies
+```Bash
+pip install pandas sqlalchemy pymysql lifetimes openpyxl
+```
+### 3. Execute the Pipelines
+Run the automated ETL script to process raw files and push structured tables into the database engine:
+
+```Bash
+python etl_pipeline.py
+```
+Run the ML modeling loop to predict forward-looking performance metrics:
+
+```Bash
+python clv_prediction.py
+```
+### 4. Run Analytical Business Audits
+Execute the strategic deep-dive metrics to answer business questions directly from your terminal or workbench interface:
+
+```Bash
+mysql -u root -p ecommerce_db < business_insights_analysis.sql
+```
+### Dashboard Key Features (Power BI)
+
+Executive Scorecards: Real-time visibility into overall company AOV, Total Revenue, and Total Transaction Volume.
+
+Strategic Segmentation Matrix: Visualized distribution of the RFM framework allowing marketing departments to click and extract distinct client cohorts for email targeting.
+
+Forward Monetization Matrix: Displays predicted vs. actual revenue patterns allowing business users to visually inspect pipeline model efficacy.
