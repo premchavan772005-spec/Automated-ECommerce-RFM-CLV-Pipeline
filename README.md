@@ -1,13 +1,6 @@
 # End-to-End Predictive Customer Analytics & Data Engineering Pipeline
 
-An enterprise-grade, data engineering and predictive machine learning pipeline that extracts raw historical e-commerce transactional data, processes behavioral metrics inside a optimized MySQL data warehouse, applies probability models to forecast long-term financial metrics, and visualizes historical and future enterprise value within an executive-level Power BI dashboard.
 
-## 📊 Business Value Delivered
-* **Total 12-Month Enterprise Customer Valuation:** **$8.64M** in forecasted customer lifetime value.
-* **Leakage Recovery Mapping:** Quantified hidden residual revenue trapped within the *Hibernating / Lost* cohort, providing targeted reactivation coordinates for marketing squads.
-* **Automated Engineering:** Transformed manual, fragmented workflows into an automated, structured data engineering asset ready for production scheduling.
-
----
 ### 🖥️ Dashboard Quick View
 
 #### Historical Performance Portfolio (Page 1)
@@ -15,98 +8,58 @@ An enterprise-grade, data engineering and predictive machine learning pipeline t
 #### Forward-Looking Predictive Valuation (Page 2)
 ![Predictive Valuation View](page2.png)
 
-## 🏗️ System Architecture & Data Flow
+# Automated E-Commerce Customer Analytics & 12-Month CLV Pipeline
 
-Below is the structured data lifecycle of this predictive infrastructure:
+## Business Impact Overview
+This production-ready data analytics pipeline processes over **397K+ transactional records** to solve a critical retail problem: **Customer Retention and Revenue Forecasting.** Instead of treating all customers equally, this automated pipeline programmatically segments the customer base and accurately forecasts future revenue, enabling marketing teams to deploy targeted campaigns that maximize ROI and mitigate churn.
 
-┌────────────────────────┐
-│ Raw Excel Data Stream  │ (397K+ Invoices & Transaction Log Records)
-└───────────┬────────────┘
-│
-│ [Python Ingestion Script: Pandas, SQLAlchemy]
-▼
-┌────────────────────────┐
-│ MySQL Data Warehouse   │ (Target Storage Engine: ecommerce_db.fact_transactions)
-└───────────┬────────────┘
-│
-├─► [MySQL Views & DB Optimization] ──► view_customer_rfm (Historical Metrics via Window Functions)
-│
-├─► [Python ML Scoring Engine]     ──► pred_customer_clv (12-Mo Projections via BG/NBD & Gamma-Gamma)
-▼
-┌────────────────────────┐
-│   Data Modeling Core   │ (1-to-1 Analytical Entity Relationship Engine)
-└───────────┬────────────┘
-│
-▼
-┌────────────────────────┐
-│ Power BI Dashboard     │ (Executive Visualization Layer: RFM Heatmaps & Financial Forecast Cards)
-└────────────────────────┘
-
+* **Identified "Slipping Champions":** Automatically flags high-value customer segments that haven't purchased in over 90 days, protecting critical revenue streams.
+* **Predictive Revenue Forecasting:** Built a 12-Month Customer Lifetime Value (CLV) model allowing inventory and finance teams to project demand based on historical transaction behavior.
+* **Operational Intelligence:** Designed a comprehensive SQL BI layer executing Pareto 80/20 distribution analytics, Month-over-Month (MoM) revenue growth trends, and segment-specific Average Order Value (AOV).
 
 ---
 
-## 📁 Repository Structure
+## Tech Stack & Architecture
 
-Organize your GitHub repository exactly like this to signal clean software architecture to technical hiring managers:
+* **Data Processing:** Python 3.11, Pandas, OpenPyXL
+* **Database & BI Engine:** MySQL, SQLAlchemy, PyMySQL
+* **Machine Learning Engine:** Lifetimes Framework (BG/NBD & Gamma-Gamma Models)
+* **Visualization:** Power BI Desktop
 
-```text
-predictive-customer-clv-pipeline/
-├── data/
-│   └── README.md                  # Instructions for downloading/placing the raw dataset
-├── database/
-│   └── customer_rfm_view_final.sql # SQL Warehouse script (CTEs, NTILE Window Functions)
-├── scripts/
-│   ├── etl_pipeline.py            # Automated raw data ingestion script
-│   └── clv_prediction.py          # Python Machine Learning scoring model script
-├── dashboard/
-│   └── E_Commerce_Predictive_Analytics_Pipeline.pbix # Multi-page interactive Power BI Dashboard
-└── README.md                      # Comprehensive project documentation
-🛠️ Tech Stack & Advanced Implementation Details
-1. Ingestion Layer (Python ETL Pipeline)
-Libraries: pandas, pymysql, sqlalchemy
+### Data Flow Pipeline
+1. **Raw Excel Data (397K+ rows)** -> Loaded via Pandas.
+2. **Python ETL Pipeline (`etl_pipeline.py`)** -> Validates, cleans, and structures transaction logs.
+3. **MySQL Database (`ecommerce_db`)** -> Stores data in core tables, feeds analytical scripts, and processes customer scores.
+4. **ML Forecasting Engine (`clv_prediction.py`)** -> Computes BG/NBD frequency models and Gamma-Gamma spend metrics.
+5. **Data Visualization Layer** -> Generates interactive executive reporting views via Power BI.
 
-Mechanism: Automates extraction of raw transactional receipts, applies strict schema typing, formats transaction date-stamps (InvoiceDate), and handles batched streaming directly into a relational database tablespace with optimized parameters (if_exists='replace').
+---
 
-2. Analytics & Warehouse Engineering (MySQL Server)
-Advanced Mechanics: Developed modular database architectures utilizing multi-layered Common Table Expressions (CTEs) and mathematical analytics Window Functions (NTILE, DENSE_RANK).
+## Advanced SQL Analytical Engine
 
-RFM Scoring Framework: Segmented customers across Recency, Frequency, and Monetary scores on an indexed 1-5 scalar system, outputting highly optimized performance structures directly to client-facing visualization platforms via the database view tier (view_customer_rfm).
+The core business logic is engineered directly into the database tier using advanced, optimized SQL (`business_insights_analysis.sql`). Key analytics implemented include:
 
-3. Machine Learning Scoring Engine (Python Predictive Layer)
-Frameworks: lifetimes, scipy
+1. **Month-over-Month (MoM) Growth Tracking:** Leverages `LAG()` window functions to dynamically monitor revenue acceleration metrics.
+2. **Pareto 80/20 Analysis:** Implements cumulative window function sums (`SUM() OVER`) to isolate the exact cohort of core customers driving the top 80% of corporate revenue.
+3. **Proactive Churn Alerts:** Dynamically filters database views to output list files of high-value customers showing signs of immediate churn.
+4. **Strategic Average Order Value (AOV):** Aggregates cross-sectional data to compute exact baseline pricing models and basket size metrics across targeted customer tiers.
 
-BG/NBD Model: Quantified specific consumer attributes modeling transaction frequency and drop-out rates (penalizer_coef=0.01) to calculate exact individual purchase probabilities.
-
-Gamma-Gamma Model: Calculated expected conditional transaction averages to cleanly separate transaction frequency from actual financial values.
-
-Pipeline Integration: Unified probability functions with financial spent values to score every active consumer ID for precise 12-Month Customer Lifetime Value (CLV) predictions, saving records directly back into database layers using structured automated schemas (pred_customer_clv).
-
-4. Enterprise BI Analytics Interface (Power BI Desktop)
-Architecture: Ingested analytical assets using specialized network application channels (ODBC User Data Source Names), building clean structural schemas mapped across explicit 1-to-1 Primary Key Relationships on CustomerID.
-
-Data Enrichment: Integrated advanced DAX Logical Layer Switching Switching Equations (SWITCH, TRUE, LEFT, MID) to systematically convert complex raw matrix cells into distinct consumer persona tiers.
-
-C-Suite Interface Layout:
-
-Tab 1: RFM Performance Matrix – Renders multi-dimensional treemaps alongside advanced scatter charts correlating raw transactional parameters.
-
-Tab 2: Value Analytics Projections – Highlights overall forecasted performance metrics using dynamic KPI highlight cards and clustered column projections.
-
-🚀 Quick Start Setup & Replication Guide
-1. Database Initialization
-Execute the setup script to construct your database environment, and run your baseline ETL pipeline scripts to populate your tables:
-
-Bash
-python scripts/etl_pipeline.py
-2. Analytical Optimization View Setup
-Open MySQL Workbench and run database/customer_rfm_view_final.sql to compile your optimized, analytical window-function layer.
-
-3. Run Predictive Scoring Machine Learning Engine
-Execute your predictive models to compute machine learning projections and update database records:
-
-Bash
-python scripts/clv_prediction.py
-4. Dashboard Visual Reporting
-Open dashboard/E_Commerce_Predictive_Analytics_Pipeline.pbix within Power BI Desktop, click Refresh on the top ribbon to load your updated machine learning and warehouse tables, and explore live metrics!
-📜 Portfolio Verification Statement
-This pipeline represents a verified, standalone data platform. It contains production-grade scripting pipelines, mathematical optimizations, and business intelligence visuals engineered to demonstrate elite, senior-level data engineering and predictive operations.
+```sql
+-- Code Sample: Isolating the Core 80% Revenue Drivers using Cumulative Window Functions
+WITH CustomerRevenue AS (
+    SELECT CustomerID, SUM(TotalLineRevenue) AS total_spend
+    FROM fact_transactions 
+    WHERE CustomerID IS NOT NULL 
+    GROUP BY CustomerID
+),
+RunningTotals AS (
+    SELECT CustomerID, total_spend,
+        SUM(total_spend) OVER (ORDER BY total_spend DESC) AS cumulative_revenue,
+        SUM(total_spend) OVER () AS total_company_revenue
+    FROM CustomerRevenue
+)
+SELECT CustomerID, ROUND(total_spend, 2) AS total_spend,
+    CASE WHEN (cumulative_revenue / total_company_revenue) <= 0.80 THEN 'Core 80% Revenue Driver'
+    ELSE 'Long Tail Customer' END AS pareto_segment
+FROM RunningTotals 
+ORDER BY total_spend DESC;
