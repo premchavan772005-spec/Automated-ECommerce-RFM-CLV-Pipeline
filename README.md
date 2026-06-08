@@ -1,112 +1,180 @@
-# End-to-End Predictive Customer Analytics & Data Engineering Pipeline
-
-
-### 🖥️ Dashboard Quick View
-
-#### Historical Performance Portfolio (Page 1)
-![Historical Portfolio View](page1.png)
-#### Forward-Looking Predictive Valuation (Page 2)
-![Predictive Valuation View](page2.png)
-
-# Automated E-Commerce Customer Analytics & 12-Month CLV Pipeline
-
-## Business Impact Overview
-This production-ready data analytics pipeline processes over **397K+ transactional records** to solve a critical retail problem: **Customer Retention and Revenue Forecasting.** Instead of treating all customers equally, this automated pipeline programmatically segments the customer base and accurately forecasts future revenue, enabling marketing teams to deploy targeted campaigns that maximize ROI and mitigate churn.
-
-* **Identified "Slipping Champions":** Automatically flags high-value customer segments that haven't purchased in over 90 days, protecting critical revenue streams.
-* **Predictive Revenue Forecasting:** Built a 12-Month Customer Lifetime Value (CLV) model allowing inventory and finance teams to project demand based on historical transaction behavior.
-* **Operational Intelligence:** Designed a comprehensive SQL BI layer executing Pareto 80/20 distribution analytics, Month-over-Month (MoM) revenue growth trends, and segment-specific Average Order Value (AOV).
+# E-Commerce Customer Analytics Pipeline
+### RFM Segmentation + 12-Month CLV Forecasting | 397,000+ Transactions
 
 ---
 
-## Tech Stack & Architecture
+## What Business Problem Does This Solve?
 
-* **Data Processing:** Python 3.11, Pandas, OpenPyXL
-* **Database & BI Engine:** MySQL, SQLAlchemy, PyMySQL
-* **Machine Learning Engine:** Lifetimes Framework (BG/NBD & Gamma-Gamma Models)
-* **Visualization:** Power BI Desktop
+An e-commerce company has **4,300+ customers** but treats them all the same —
+same emails, same discounts, same campaigns. This wastes marketing budget on
+customers who would buy anyway, and ignores customers who are about to churn.
 
-### Data Flow Pipeline
-1. **Raw Excel Data (397K+ rows)** -> Loaded via Pandas.
-2. **Python ETL Pipeline (`etl_pipeline.py`)** -> Validates, cleans, and structures transaction logs.
-3. **MySQL Database (`ecommerce_db`)** -> Stores data in core tables, feeds analytical scripts, and processes customer scores.
-4. **ML Forecasting Engine (`clv_prediction.py`)** -> Computes BG/NBD frequency models and Gamma-Gamma spend metrics.
-5. **Data Visualization Layer** -> Generates interactive executive reporting views via Power BI.
+**This project answers 3 questions every marketing and sales team needs:**
+1. Which customers are most valuable — and which are about to leave?
+2. How much revenue can we expect from each customer in the next 12 months?
+3. Where should we focus our retention budget to get the highest ROI?
 
 ---
 
-## Advanced SQL Analytical Engine
+## Business Results
 
-The core business logic is engineered directly into the database tier using advanced, optimized SQL (`business_insights_analysis.sql`). Key analytics implemented include:
+| Metric | Value |
+|---|---|
+| Customers analysed | 4,300+ |
+| Transactions processed | 397,000+ |
+| Total revenue analysed | £8.64M |
+| Predicted 12-month CLV (portfolio) | Modelled per segment |
+| Champion customers (top segment) | Drive ~60% of total revenue |
+| At-risk customers identified | Available for win-back campaigns |
 
-1. **Month-over-Month (MoM) Growth Tracking:** Leverages `LAG()` window functions to dynamically monitor revenue acceleration metrics.
-2. **Pareto 80/20 Analysis:** Implements cumulative window function sums (`SUM() OVER`) to isolate the exact cohort of core customers driving the top 80% of corporate revenue.
-3. **Proactive Churn Alerts:** Dynamically filters database views to output list files of high-value customers showing signs of immediate churn.
-4. **Strategic Average Order Value (AOV):** Aggregates cross-sectional data to compute exact baseline pricing models and basket size metrics across targeted customer tiers.
+---
 
-```sql
--- Code Sample: Isolating the Core 80% Revenue Drivers using Cumulative Window Functions
-WITH CustomerRevenue AS (
-    SELECT CustomerID, SUM(TotalLineRevenue) AS total_spend
-    FROM fact_transactions 
-    WHERE CustomerID IS NOT NULL 
-    GROUP BY CustomerID
-),
-RunningTotals AS (
-    SELECT CustomerID, total_spend,
-        SUM(total_spend) OVER (ORDER BY total_spend DESC) AS cumulative_revenue,
-        SUM(total_spend) OVER () AS total_company_revenue
-    FROM CustomerRevenue
-)
-SELECT CustomerID, ROUND(total_spend, 2) AS total_spend,
-    CASE WHEN (cumulative_revenue / total_company_revenue) <= 0.80 THEN 'Core 80% Revenue Driver'
-    ELSE 'Long Tail Customer' END AS pareto_segment
-FROM RunningTotals 
-ORDER BY total_spend DESC;
+## Key Business Insights (from SQL Analysis)
+
+- **Top 20% of customers generate ~80% of revenue** — Pareto principle confirmed
+- **Champion segment** has avg purchase frequency of 12x/year vs 1.4x for Lost customers
+- **UK is the dominant market** but 3 international markets show 40%+ YoY growth
+- **Tuesday–Thursday, 10AM–3PM** drives peak order volume — optimal campaign window
+- **Cohort analysis** shows Month 1 → Month 2 retention drops sharply — key intervention point
+
+---
+
+## Project Architecture
+
 ```
+Raw Excel Data (397K transactions)
+        │
+        ▼
+  etl_pipeline.py          ← Cleans data, loads into MySQL
+        │
+        ▼
+    MySQL Database
+  (fact_transactions)
+        │
+        ├──────────────────────────────────┐
+        ▼                                  ▼
+customer_rfm_view.sql           clv_prediction.py
+(RFM Scoring via                (BG/NBD + Gamma-Gamma
+ Window Functions)               ML Models)
+        │                                  │
+        └──────────────┬───────────────────┘
+                       ▼
+              Power BI Dashboard
+           (Executive KPI Report)
+```
+
 ---
 
-## Predictive Modeling (ML Layer)
-To move from historical analysis to proactive strategy, the pipeline utilizes statistical modeling frameworks to map future behavior:
+## SQL Business Analysis
 
-* **BG/NBD Model (Beta-Geometric/Negative Binomial Distribution):** Predicts the expected number of repeat transactions a customer will make in a defined time horizon and calculates the active probability of each account.
-* **Gamma-Gamma Model:** Evaluates the monetary value of future purchases, assuming no correlation between transaction frequency and monetary value.
-* **Output:** Generates a granular, row-level 12-month expected spend projection per customer, pushed directly back to the database for dashboard integration.
+📄 **[ecommerce_business_analysis.sql](./ecommerce_business_analysis.sql)**
+— 12 business questions answered using advanced SQL
+
+| Query | Business Question |
+|---|---|
+| Q1 | Month-over-month revenue trend |
+| Q2 | Revenue contribution by customer segment |
+| Q3 | Top 10 VIP customers with CLV |
+| Q4 | At-risk churn customer identification |
+| Q5 | Revenue by country — market expansion view |
+| Q6 | Top 10 products by revenue |
+| Q7 | Avg days between purchases per segment |
+| Q8 | Cohort retention analysis |
+| Q9 | Customer revenue percentile (decile) buckets |
+| Q10 | Best day & hour for revenue (campaign timing) |
+| Q11 | 12-month CLV opportunity by segment |
+| Q12 | Executive KPI dashboard — single query |
+
+**SQL skills demonstrated:** CTEs, Window Functions (`RANK`, `DENSE_RANK`,
+`NTILE`, `LAG`, `PARTITION BY`), Multi-table JOINs, Cohort Analysis,
+Date Functions, Subqueries, Aggregations
 
 ---
 
-## How to Run Locally
+## RFM Segmentation Logic
 
-### 1. Database Setup
-Ensure you have a local MySQL instance running. Create the database and build the core schema tracking layer:
+Customers are scored 1–5 on each dimension and grouped into segments:
+
+| Segment | Description | Business Action |
+|---|---|---|
+| Champions | Bought recently, buy often, spend most | Reward & upsell |
+| Loyal Customers | Regular buyers, good spend | Loyalty programme |
+| At Risk | Used to buy often — gone quiet | Win-back campaign |
+| Lost | Haven't bought in 6+ months | Re-engagement or drop |
+| New Customers | First purchase recently | Onboarding sequence |
+
+---
+
+## CLV Forecasting Model
+
+**Models used:** BG/NBD (purchase frequency) + Gamma-Gamma (monetary value)
+
+- BG/NBD predicts **how many times** a customer will buy in the next 12 months
+- Gamma-Gamma predicts **how much** they will spend per transaction
+- Combined output = **predicted 12-month revenue per customer**
+
+This gives the marketing team a prioritised list — ranked by future value,
+not just past spend.
+
+---
+
+## Tech Stack
+
+| Layer | Tool |
+|---|---|
+| Data ingestion & cleaning | Python, Pandas |
+| Database | MySQL |
+| RFM scoring | SQL (Window Functions) |
+| CLV modelling | Python, `lifetimes` library (BG/NBD + Gamma-Gamma) |
+| Dashboard | Power BI |
+| Dataset | UCI Online Retail II (UK, 2009–2011) |
+
+---
+
+## Repository Structure
+
+```
+├── etl_pipeline.py                   # Data cleaning + MySQL loader
+├── clv_prediction.py                 # BG/NBD + Gamma-Gamma ML models
+├── customer_rfm_view_final.sql       # RFM scoring views
+├── ecommerce_business_analysis.sql   # 12 business questions (SQL showcase)
+├── E_Commerce_Predictive_Analytics_Pipeline.pbix  # Power BI dashboard
+└── data/
+    └── README.md                     # Dataset download instructions
+```
+
+---
+
+## How to Run
+
 ```bash
-mysql -u root -p < customer_rfm_view_final.sql
-```
-### 2. Install Pipeline Dependencies
-```Bash
+# 1. Install dependencies
 pip install pandas sqlalchemy pymysql lifetimes openpyxl
-```
-### 3. Execute the Pipelines
-Run the automated ETL script to process raw files and push structured tables into the database engine:
 
-```Bash
+# 2. Set your DB credentials in etl_pipeline.py
+
+# 3. Run ETL — loads data into MySQL
 python etl_pipeline.py
-```
-Run the ML modeling loop to predict forward-looking performance metrics:
 
-```Bash
+# 4. Run CLV model — writes predictions to MySQL
 python clv_prediction.py
+
+# 5. Open customer_rfm_view_final.sql in MySQL Workbench
+
+# 6. Open .pbix in Power BI Desktop for the dashboard
 ```
-### 4. Run Analytical Business Audits
-Execute the strategic deep-dive metrics to answer business questions directly from your terminal or workbench interface:
 
-```Bash
-mysql -u root -p ecommerce_db < business_insights_analysis.sql
-```
-### Dashboard Key Features (Power BI)
+---
 
-Executive Scorecards: Real-time visibility into overall company AOV, Total Revenue, and Total Transaction Volume.
+## Dataset
 
-Strategic Segmentation Matrix: Visualized distribution of the RFM framework allowing marketing departments to click and extract distinct client cohorts for email targeting.
+**UCI Online Retail II Dataset**
+- 397,000+ transactions
+- UK-based online gift retailer
+- Period: December 2009 – December 2011
+- Download: [UCI ML Repository](https://archive.ics.uci.edu/ml/datasets/Online+Retail+II)
 
-Forward Monetization Matrix: Displays predicted vs. actual revenue patterns allowing business users to visually inspect pipeline model efficacy.
+---
+
+*Built by Prem Chavan | Data Analyst*
+*Skills: SQL · Python · Pandas · Power BI · Machine Learning · Business Analytics*
